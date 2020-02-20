@@ -1,0 +1,80 @@
+Name: AWS Dynamic Object Script
+Version 1
+UPDATED 2/20/2020
+AUTHOR CB Currier ccurrier@checkpoint.com
+
+------------------------------
+Description
+------------------------------
+This is a shell script to populate a Check Point Firewall Dynamic Object 
+with the Internet Addresses published as AWS Internet access / connection 
+points (i.e. gateways into / out of AWS). This will convert the ip-ranges 
+json file and populate the dynamic object referenced. This can be schedlude 
+to update on a regular interval, just once and has options for using a local
+file, a different url and can be disabled or the status retrieved.
+The Dynamic Object should be defined in the Security policy installed on 
+the Gateway and run locally form each respective gateway.
+
+The Firewall shuold be Check Point version R80.10 or higher.
+
+------------------------------
+Install:
+------------------------------
+  cp dyno_aws.sh $CPDIR/bin
+  chmod 755 $CPDIR/bin/dyno_aws.sh
+
+------------------------------
+Usage:
+------------------------------
+  dyno_aws.sh <options>
+
+Options:
+  -o                    Dynamic Object Name (required)
+  -u                    url to retrieve IP Address list (optional)
+                                default is https://ip-ranges.amazonaws.com/ip-ranges.json
+  -f                    local file name of IP Address list (optional)
+  -a                    action to perform (required) includes:
+                                run (once), on (schedule), off (from schedule), stat (status)
+  -h                    show help
+
+------------------------------
+EXAMPLES
+------------------------------
+IMPORTANT:  Be sure that the dynamic object you are working with has been created
+	    in your security policy and pushed out to the gateway. If not you will
+	    be updating an object that will have no effect.
+
+Activate an object
+     dyno_aws.sh -o AwsDynObj  -a on
+
+Run Right away
+     dyno_aws.sh -o AwsDynObj -a run
+
+Deactivate an object
+    dyno_aws.sh -o AwsDynObj -a off
+
+Get Object status
+       dyno_aws.sh -o AwsDynObj -a stat
+
+------------------------------
+Check:
+------------------------------
+  dynamic_objects -l
+
+
+------------------------------
+LOGS
+------------------------------
+
+A Log of events can be found at $FWDIR/log/dyno_aws.log. 
+
+------------------------------
+Change Log
+------------------------------
+
+v1 - 8/20/18  - 1st version
+
+------------------------------
+Author
+------------------------------
+CB Currier - ccurrier@checkpoint.com
